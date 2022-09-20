@@ -16,6 +16,6 @@ curl -v  --request POST   --data-binary "@trade.csv" --header 'Content-Type: tex
 
 
 TODO
-1. test case creation
-2. code refactoring
+1. more test case creation
+2. more code refactoring
 3. optimize code for bulk files
