@@ -9,6 +9,9 @@ import com.tradedemo.application.model.Trade;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,9 @@ public class TradeService {
             MappingIterator<Trade> mi = oReader.readValues(reader);
             while (mi.hasNext()) {
                 Trade current = mi.next();
-                trades.add(current);
+                if(dateValidator(current.getDate())) {
+                    trades.add(current);
+                }
             }
 
 
@@ -33,6 +38,16 @@ public class TradeService {
             throw new RuntimeException(e);
         }
         return trades;
+    }
+
+    private boolean dateValidator(String dateStr)
+    {
+        try {
+            LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
     }
 
 }
