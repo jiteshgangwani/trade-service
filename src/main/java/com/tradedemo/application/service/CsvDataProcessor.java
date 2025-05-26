@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CsvDataProcessor implements DataProcessor {
@@ -31,11 +32,32 @@ public class CsvDataProcessor implements DataProcessor {
         } catch (IOException e) {
             throw new RuntimeException("Error processing CSV data", e);
         }
-        return trades;
+        
+        // Filter out invalid dates
+        return trades.stream()
+                    .filter(trade -> isValidDate(trade.getDate()))
+                    .collect(Collectors.toList());
     }
 
     @Override
     public String getContentType() {
-        return "text/csv";
+        return "text/plain";
+    }
+    
+    private boolean isValidDate(String date) {
+        if (date == null || date.length() != 8) {
+            return false;
+        }
+        try {
+            int year = Integer.parseInt(date.substring(0, 4));
+            int month = Integer.parseInt(date.substring(4, 6));
+            int day = Integer.parseInt(date.substring(6, 8));
+            
+            return year >= 1900 && year <= 9999 &&
+                   month >= 1 && month <= 12 &&
+                   day >= 1 && day <= 31;
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+            return false;
+        }
     }
 } 
