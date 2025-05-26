@@ -1,53 +1,30 @@
 package com.tradedemo.application.service;
 
-
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.tradedemo.application.model.Trade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class TradeService {
 
-    public List<Trade> getTrade(String tradeString) {
-        CsvMapper csvMapper = new CsvMapper();
-        CsvSchema schema = CsvSchema.emptySchema().withHeader();
-        ObjectReader oReader = csvMapper.reader(Trade.class).with(schema);
-        List<Trade> trades = new ArrayList<>();
+    private final Map<String, DataProcessor> processors;
 
-        try (Reader reader = new StringReader(tradeString)) {
-            MappingIterator<Trade> mi = oReader.readValues(reader);
-            while (mi.hasNext()) {
-                Trade current = mi.next();
-                if(dateValidator(current.getDate())) {
-                    trades.add(current);
-                }
-            }
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return trades;
+    @Autowired
+    public TradeService(List<DataProcessor> dataProcessors) {
+        this.processors = dataProcessors.stream()
+                .collect(Collectors.toMap(DataProcessor::getContentType, Function.identity()));
     }
 
-    private boolean dateValidator(String dateStr)
-    {
-        try {
-            LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
-        } catch (DateTimeParseException e) {
-            return false;
+    public List<Trade> processTrades(String content, String contentType) {
+        DataProcessor processor = processors.get(contentType);
+        if (processor == null) {
+            throw new UnsupportedOperationException("Unsupported content type: " + contentType);
         }
-        return true;
+        return processor.processTrades(content);
     }
-
 }
