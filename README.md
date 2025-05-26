@@ -60,32 +60,37 @@ date,product_id,currency,price
 </trades>
 ```
 
-### Testing with PowerShell
+### Testing in Windows PowerShell
 
-#### CSV Format
+#### Method 1: Using PowerShell Native Commands
 ```powershell
+# For CSV
 $headers = @{ "Content-Type" = "text/plain" }
 Invoke-WebRequest -Method Post -Headers $headers -InFile "trade.csv" -Uri "http://localhost:8081/api/v1/enrich"
-```
 
-#### XML Format
-```powershell
+# For XML
 $headers = @{ "Content-Type" = "application/xml" }
 Invoke-WebRequest -Method Post -Headers $headers -InFile "trade.xml" -Uri "http://localhost:8081/api/v1/enrich"
 ```
 
-### Testing with curl (Git Bash or Linux)
+#### Method 2: Using curl.exe (requires Git Bash or curl installed)
+```powershell
+# For CSV
+curl.exe -X POST -H "Content-Type: text/plain" --data-binary "@trade.csv" http://localhost:8081/api/v1/enrich
 
-#### CSV Format
+# For XML
+curl.exe -X POST -H "Content-Type: application/xml" --data-binary "@trade.xml" http://localhost:8081/api/v1/enrich
+```
+
+### Testing in Git Bash or Linux
 ```bash
+# For CSV
 curl -X POST \
   -H "Content-Type: text/plain" \
   --data-binary "@trade.csv" \
   http://localhost:8081/api/v1/enrich
-```
 
-#### XML Format
-```bash
+# For XML
 curl -X POST \
   -H "Content-Type: application/xml" \
   --data-binary "@trade.xml" \
