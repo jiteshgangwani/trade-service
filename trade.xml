@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trades>
+    <trade>
+        <date>20160101</date>
+        <product_id>1</product_id>
+        <currency>EUR</currency>
+        <price>10.0</price>
+    </trade>
+    <trade>
+        <date>20160102</date>
+        <product_id>2</product_id>
+        <currency>USD</currency>
+        <price>15.5</price>
+    </trade>
+    <trade>
+        <date>20160103</date>
+        <product_id>3</product_id>
+        <currency>GBP</currency>
+        <price>20.75</price>
+    </trade>
+    <trade>
+        <date>20160104</date>
+        <product_id>1</product_id>
+        <currency>EUR</currency>
+        <price>11.25</price>
+    </trade>
+    <trade>
+        <date>20160105</date>
+        <product_id>2</product_id>
+        <currency>USD</currency>
+        <price>16.80</price>
+    </trade>
+</trades> 
